@@ -1,0 +1,109 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "26.0.0"
+    defaultConfig {
+        applicationId "cn.lspush.spruce"
+        minSdkVersion 16
+        //noinspection OldTargetApi
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        resConfigs "en", "zh"
+
+        ndk {
+            abiFilters 'armeabi', 'x86' //, 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+        }
+    }
+    signingConfigs {
+        debugConfig {
+            keyAlias metadata.alias
+            keyPassword metadata.pwd
+            // Note: travis-ci not support relative path
+            storeFile rootProject.file(metadata.storeFile)
+            storePassword metadata.storePwd
+        }
+        releaseConfig {
+            keyAlias metadata.alias
+            keyPassword metadata.pwd
+            storeFile rootProject.file(metadata.storeFile)
+            storePassword metadata.storePwd
+        }
+    }
+    buildTypes {
+        debug {
+            //applicationIdSuffix ".debug"
+            //versionNameSuffix "-debug"
+            resValue "string", "app_name", "城市名接龙 (debug)"
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.debugConfig
+        }
+        release {
+            def proguards = rootProject.relativePath('proguards')
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.releaseConfig
+            // http://blog.csdn.net/lihenair/article/details/51671803
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', proguards
+        }
+    }
+
+    dataBinding {
+        enabled true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    // https://stackoverflow.com/questions/44044031/grade-plugin-3-alpha1-outputfile-causes-error
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "${applicationId}_${variant.name}_${variant.versionName}.apk"
+        }
+    }
+}
+
+repositories.flatDir {
+    dirs 'libs'
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version")
+    //implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
+
+    implementation("com.android.support:appcompat-v7:$support_version")
+    implementation('com.android.support.constraint:constraint-layout:1.0.2')
+    //implementation("com.android.support:design:$support_version")
+    //implementation("com.android.support:recyclerview-v7:$support_version")
+
+    //implementation("com.google.dagger:dagger:$dagger2_version")
+    //annotationProcessor("com.google.dagger:dagger-compiler:$dagger2_version")
+    //implementation("com.google.dagger:dagger-android-support:$dagger2_version")
+    //annotationProcessor("com.google.dagger:dagger-android-processor:$dagger2_version")
+
+    implementation('io.reactivex.rxjava2:rxandroid:2.0.1', 'io.reactivex.rxjava2:rxjava:2.1.1')
+
+    implementation("com.google.code.gson:gson:$gson_version")
+    implementation("com.squareup.okhttp3:okhttp:$okhttp_version")
+    //implementation("com.squareup.okhttp3:logging-interceptor:$okhttp_version")
+
+    implementation("com.squareup.retrofit2:retrofit:$retrofit_version")
+    // deal ser/deser primitive types json convert
+    // http://stackoverflow.com/questions/33139849/retrofit-2-0-post-method-with-body-is-string
+    implementation("com.squareup.retrofit2:converter-scalars:$retrofit_version")
+    implementation("com.squareup.retrofit2:converter-gson:$retrofit_version")
+    implementation("com.squareup.retrofit2:adapter-rxjava2:$retrofit_version")
+
+    testImplementation(junit)
+    androidTestImplementation("com.android.support.test.espresso:espresso-core:$espresso_version", {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+}

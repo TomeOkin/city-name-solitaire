@@ -1,0 +1,36 @@
+configurations {
+    androidTestCompile.exclude group: 'com.android.support'
+    androidTestCompile.exclude module: 'android'
+}
+
+dependencies {
+    testCompile(
+            junit,
+            mockito2,
+            "org.robolectric:robolectric:3.3.2",
+            "org.assertj:assertj-core:3.8.0",
+            "com.google.truth:truth:0.33"
+    )
+
+    androidTestCompile(
+            junit,
+            mockito2,
+            // Android JUnit Runner
+            "com.android.support.test:runner:0.5",
+            // JUnit4 Rules
+            "com.android.support.test:rules:0.5",
+            // Espresso core
+            "com.android.support.test.espresso:espresso-core:$espresso_version",
+            // Espresso-idling-resource for synchronization with background jobs
+            "com.android.support.test.espresso:espresso-idling-resource:$espresso_version",
+            // Espresso-contrib for DatePicker, RecyclerView, Drawer actions, Accessibility checks, CountingIdlingResource
+            "com.android.support.test.espresso:espresso-contrib:$espresso_version",
+            // Espresso-web for WebView support
+            "com.android.support.test.espresso:espresso-web:$espresso_version",
+            // Espresso-intents for validation and stubbing of Intents
+            "com.android.support.test.espresso:espresso-intents:$espresso_version",
+            // UiAutomator
+            // "com.android.support.test.uiautomator:uiautomator-v18:2.1.2"
+            "com.android.support:support-annotations:$support_version"
+    )
+}
