@@ -34,7 +34,7 @@ apk 下载：[城市名接龙][city_name_solitaire_apk]
 
 ``` kotlin
 yyWeather.cities()
-		// 将多层次数据转换为单层数据源
+        // 将多层次数据转换为单层数据源
         .map { it.list }
         .flatMap({ Flowable.fromIterable(it) })
         .flatMap({ Flowable.fromIterable(it.list) })
